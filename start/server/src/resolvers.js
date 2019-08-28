@@ -2,7 +2,6 @@ const { paginateResults } = require('./utils');
 
 module.exports = {
   Query: {
-
     launches: async (_, { pageSize = 20, after }, { dataSources }) => {
       const allLaunches = await dataSources.launchAPI.getAllLaunches();
       // we want these in reverse chronological order
@@ -27,5 +26,13 @@ module.exports = {
       dataSources.launchAPI.getLaunchById({ launchId: id }),
      me: async (_, __, { dataSources }) =>
       dataSources.userAPI.findOrCreateUser(),
-  }
+  },
+  Mission: {
+  // make sure the default size is 'large' in case user doesn't specify
+  missionPatch: (mission, { size } = { size: 'LARGE' }) => {
+    return size === 'SMALL'
+      ? mission.missionPatchSmall
+      : mission.missionPatchLarge;
+  },
+},
 };
